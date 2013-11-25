@@ -14,21 +14,31 @@ display_mnemonic(){
 
 # Convert 12 words to seed
 mnemonic_to_seed(){
-	cmd=(dialog --backtitle "Console Paper Wallet: Mnemonic Seed Entry" --title "Electrum 12-word mnemonic" --inputbox "Enter 12 word mnemonic" 8 75)
+	cmd=(dialog --backtitle "Console Paper Wallet: Mnemonic Seed Entry"  --title "Electrum 12-word mnemonic" --inputbox "Enter 12 word mnemonic" 8 75)
 
 	while :
 	do
 		words=$("${cmd[@]}" 2>&1 >/dev/tty)	
 		word_count=$(echo $words | wc -w)
 
-		if [ $word_count -eq 12 ]; then
-			m_seed=$(echo $words | sx "mnemonic")
-			break
+		if [ $word_count -eq 0 ]; then
+			break 2
 		fi
 
-		if [ $word_count -eq 0 ]; then
-			break
+		if [ $word_count -eq 12 ]; then
+			tmp_seed=$(echo $words | sx "mnemonic" | tr -d '\n')
+			mnemonic=$(echo $tmp_seed | sx "mnemonic")
+			# Verify mnemonic		
+			if [ "$words" == "$mnemonic" ]; then
+				m_seed=$tmp_seed
+				break 2
+			else
+				dialog --backtitle "Console Paper Wallet: Error" --title "mnemonic error" --msgbox "Invalid mnemonic. Try again." 9 50
+			fi	
+		else
+			dialog --backtitle "Console Paper Wallet: Error" --title "mnemonic error" --msgbox "Mnemonic must be 12 words" 9 50
 		fi
+		
 	done
 }
 
@@ -41,8 +51,8 @@ pub_key(){
 		index=$("${cmd[@]}" 2>&1 >/dev/tty)	
 		if  [[ $index =~ $re ]]; then
 			pub_key=$(echo $m_seed | sx "genaddr" $index)
-			qr_code=$(qrencode -m 1 -t ASCII "$pub_key")		
-			qr_unicode=${qr_code//#/$unicode_box_char}
+			qr_code=$(qrencode -s 10 -m 1 -t ASCII "$pub_key")		
+			qr_unicode=${qr_code//"#"/$unicode_box_char}
 			#echo $qr_unicode
 			dialog --backtitle "Console Paper Wallet: Public Key" --no-collapse --keep-tite --title "Key[$index]: $pub_key" --msgbox "$qr_unicode" 36 66
 		  	break;
@@ -60,8 +70,8 @@ priv_key(){
 		index=$("${cmd[@]}" 2>&1 >/dev/tty)	
 		if  [[ $index =~ $re ]]; then
 			priv_key=$(echo $m_seed | sx "genpriv" $index)
-			qr_code=$(qrencode -m 1 -t ASCII "$priv_key")		
-			qr_unicode=${qr_code//#/$unicode_box_char}
+			qr_code=$(qrencode -s 10 -m 1 -t ASCII "$priv_key")		
+			qr_unicode=${qr_code//"#"/$unicode_box_char}
 			dialog --backtitle "Console Paper Wallet: Private Key" --no-collapse --keep-tite --title "Key[$index]: $priv_key" --msgbox "$qr_unicode" 36 66
 		  	break;
 		else break;
@@ -76,9 +86,9 @@ main_menu(){
 	do
 		cmd=(dialog --backtitle "Console Paper Wallet: Main Menu" --keep-tite --no-cancel --menu "Current Seed: $m_seed" 18 70 22)
 
-		options=(1 "Show public Key"
-				 2 "Show private Key"
-				 3 "Show mnemonic"
+		options=(1 "Show mnemonic"
+				 2 "Show public address"
+				 3 "Show private key"
 				 4 "Create new random seed"
 				 5 "Create seed from mnemonic"			 
 				 6 "Quit")
@@ -88,16 +98,16 @@ main_menu(){
 		for choice in $choices
 		do
 			case $choice in
-				1)
-				    pub_key
+				1)    
+					display_mnemonic
 					break
 				    ;;
 				2)
-					priv_key
+					pub_key
 					break
 				    ;;
 				3)
-				    display_mnemonic
+				    priv_key
 					break
 				    ;;
 				4)
@@ -109,7 +119,7 @@ main_menu(){
 					break
 				    ;;
 				6)
-				    echo "Fifth Option"
+				    (clear)
 				    break 2
 					;;
 			esac
