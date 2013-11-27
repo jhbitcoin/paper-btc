@@ -27,7 +27,7 @@ display_mnemonic(){
 
 # Convert 12 words to seed
 mnemonic_to_seed(){
-	cmd=(dialog --backtitle "Console Paper Wallet: Mnemonic Seed Entry"  --title "Electrum compatible 12-word mnemonic" --inputbox "Enter 12 word mnemonic:" 8 75)
+	cmd=(dialog --backtitle "Console Paper Wallet: Mnemonic Seed Entry"  --title "Electrum compatible 12-word mnemonic" --inputbox "Enter 12-word mnemonic (separated by spaces):" 8 75)
 
 	while :
 	do
@@ -49,7 +49,7 @@ mnemonic_to_seed(){
 				dialog --backtitle "Console Paper Wallet: Error" --title "mnemonic error" --msgbox "Invalid mnemonic. Try again." 9 50
 			fi	
 		else
-			dialog --backtitle "Console Paper Wallet: Error" --title "mnemonic error" --msgbox "Mnemonic must be 12 words seperated by spaces." 9 50
+			dialog --backtitle "Console Paper Wallet: Error" --title "mnemonic error" --msgbox "Mnemonic must be 12 words separated by spaces." 9 50
 		fi
 		
 	done
@@ -66,7 +66,7 @@ pub_addr(){
 			pub_key=$(echo $m_seed | sx "genaddr" $index)
 			qr_code=$(qrencode -s 10 -m 1 -t ASCII "$pub_key")		
 			qr_unicode=${qr_code//"#"/$unicode_box_char}
-			dialog --backtitle "Console Paper Wallet: Public Address" --no-collapse --keep-tite --title "Key[$index]: $pub_key" --msgbox "$qr_unicode" 36 66
+			dialog --backtitle "Console Paper Wallet: Public Address" --no-collapse --keep-tite --title "Address[$index]: $pub_key" --msgbox "$qr_unicode" 36 66
 		  	break;
 		else break;
 		fi
