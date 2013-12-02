@@ -131,6 +131,39 @@ priv_key(){
 	done
 }
 
+# Display Private Key
+dice_to_seed(){
+	seed=""
+	prompt="Enter at least 50 dice rolls (numbers 1 through 6):"
+	while [ ${#seed} -lt 32 ]; do
+		cmd=(dialog --backtitle "Console Paper Wallet: Dice Roll Entry"
+				--title "Dice Roll Seed:"$seed
+				--inputbox "$prompt"
+				8 75)
+		roll=$("${cmd[@]}" 2>&1 >/dev/tty | tr -dc "1-6" )
+		
+		if [ $(echo $roll | wc -w) -eq 0 ]
+		then
+			break 2
+		fi
+
+		hex_roll=""
+		for ((ii=0; ii<${#roll}; ii++)); do
+			hex_roll=${hex_roll}$((${roll:ii:1}-1))		
+		done
+		hex_roll=$(echo "obase=16;ibase=6;"$roll | bc | tr '[:upper:]' '[:lower:]')
+		seed=${seed}$hex_roll
+		prompt="Enter more dice rolls (numbers 1 through 6):"
+	done
+	m_seed=$(echo ${seed:0:32})
+
+	mnemonic=$(echo $m_seed | sx "mnemonic")
+	dialog --backtitle "Console Paper Wallet: Mnemonic Seed" \
+			--title "Electrum compatible 12-word mnemonic" \
+			--msgbox "\n$mnemonic" \
+			9 50
+}
+
 # Main Menu
 main_menu(){
 
@@ -147,7 +180,8 @@ main_menu(){
 					3 "Show private key"
 					4 "Create new random seed"
 					5 "Create seed from mnemonic"
-					6 "Quit")
+					6 "Create seed from dice rolls"
+					7 "Quit")
 
 		choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
 
@@ -175,6 +209,10 @@ main_menu(){
 					break
 					;;
 				6)
+					dice_to_seed
+					break
+					;;
+				7)
 					(clear)
 					break 2
 					;;
