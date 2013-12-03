@@ -1,6 +1,8 @@
 paper-btc
 =========
-paper-btc is a Live Linux ISO (bootable from USB Stick or CD-Rom) which provides a simple, console interface for generating secure Bitcoin paper wallets in an off-line environment. This is a minimalist Debian distribution with all networking code removed.
+paper-btc is a Live Linux ISO (bootable from USB Stick or CD-Rom) which provides a simple, console interface for generating secure Bitcoin paper wallets in an off-line environment. This is a minimalist Debian distribution with all networking code removed. The ISO can be downloaded from: (bitcoin-tools-0.1.1.iso 313.0 MB) https://mega.co.nz/#!ZJtmzA6A!VkX1VBakEBWvu1kjAbYS8wQ5oJg5uwWN80T7Iy57eQ4
+
+Instructions for building the ISO from scratch using Debian sources will be coming shortly.
 
 
 bitcoin-paper-wallet.pdf
@@ -16,4 +18,4 @@ Each seed value has an associated 12 word, Electrum compatible mnemonic. The Ele
 
 
 ### Donate
-If you find this project useful, consider contributing to making improvements or donating to: 15w4xbWectsupZ8mQjbYiHt7GiFhm6MMQh
+If you find this project useful, consider contributing by making improvements to the software or donating to: 15w4xbWectsupZ8mQjbYiHt7GiFhm6MMQh
