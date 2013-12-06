@@ -79,6 +79,7 @@ pub_addr(){
 	cmd=(dialog --backtitle "Console Paper Wallet: Public Address Select"
 				--keep-tite
 				--title "Address Index"
+				--default-item "0"
 				--inputbox "Which public address number?"
 				10 36)
 
@@ -131,7 +132,7 @@ priv_key(){
 	done
 }
 
-# Display Private Key
+# Convert dice rolls 1-6 (base 6) to a 120-bit hexidecimal seed.
 dice_to_seed(){
 	seed=""
 	prompt="Enter at least 50 dice rolls (numbers 1 through 6):"
@@ -164,6 +165,39 @@ dice_to_seed(){
 			9 50
 }
 
+# Show Help Dialog
+show_help(){
+	prompt="\nConsole Paper Wallet uses an Electrum compatible, 128-bit random seed       \n"
+	prompt=$prompt"to generate private keys. A random seed is created every time you run  \n"
+	prompt=$prompt"the program. Create a new seed at any time and/or roll physical dice to\n"
+	prompt=$prompt"ensure the software is not manipulating the random seed. Once you've   \n"
+	prompt=$prompt"created a seed, it will be displayed above the main menu.              \n\n"
+	prompt=$prompt"   *****************************************************************   \n"
+	prompt=$prompt"      Show the mnemonic and record the 12 WORDS on paper or other      \n"
+	prompt=$prompt"      long lasting material. If you lose the mnemonic, your            \n"
+	prompt=$prompt"      bitcoins will be lost \Z1FOREVER\Zn.                             \n\n"
+	prompt=$prompt"      Note that words in the mnemonic are all lowercase and are        \n"
+	prompt=$prompt"      separated by a single <space> character. This mnemonic can       \n"
+	prompt=$prompt"      be used to re-create a spending wallet in Electrum. See:         \n"
+	prompt=$prompt"                          http://electrum.org                          \n"
+	prompt=$prompt"   *****************************************************************   \n\n"
+	prompt=$prompt"To recreate a seed from a prior session, select the                    \n"
+	prompt=$prompt"\Z4\ZbCreate seed from mnemonic\Zn option and type in the 12 word mnemonic. \n\n"
+	prompt=$prompt"All public addresses and private keys are pre-determined based on the  \n"
+	prompt=$prompt"seed value. Enter an integer number to display the corresponding       \n"
+	prompt=$prompt"deterministic, public address and private key.                          \n\n"
+	prompt=$prompt"Record or scan the QR-Code of a public address to deposit funds. It is \n"
+	prompt=$prompt"safe to share any public address unless you wish to remain anonymous.  \n\n"
+	prompt=$prompt"Take care when recording or scanning any private Key. The only time    \n"
+	prompt=$prompt"a private key should be used is immediately before spending all        \n"
+	prompt=$prompt"the bitcoins in a specific public address.\n"
+	dialog --backtitle "Console Paper Wallet: Help" \
+				--title "How To Use" \
+				--colors \
+				--msgbox "$prompt" \
+				36 75 
+}
+
 # Main Menu
 main_menu(){
 
@@ -172,8 +206,9 @@ main_menu(){
 		cmd=(dialog --backtitle "Console Paper Wallet: Main Menu"
 					--keep-tite
 					--no-cancel
+					--help-button
 					--menu "Current Seed: $m_seed"
-					14 55 22)
+					15 55 22)
 
 		options=(1 "Show mnemonic"
 					2 "Show public address"
@@ -188,6 +223,10 @@ main_menu(){
 		for choice in $choices
 		do
 			case $choice in
+				HELP)
+					show_help
+					break
+					;;
 				1)
 					display_mnemonic
 					break
