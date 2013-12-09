@@ -30,8 +30,8 @@ Create chroot
 -------------
 
     $ sudo debootstrap --arch i386 wheezy ./wheezy-chroot http://http.debian.net/debian/
-    
-    
+
+
 Enter chroot
 ------------
 
@@ -55,8 +55,8 @@ Add additional sources for future dependencies
 
 Set hostname and update hosts file
     # echo "bitcoin-tools" > /etc/hostname
-    # echo "127.0.1.1   bitcoin-tools" >> /etc/hosts
-    
+    # echo "127.0.1.1	bitcoin-tools" >> /etc/hosts
+
 Install packages for programs needed on the live cd
     # apt-get update
     # apt-get install -y live-boot live-config-sysvinit live-config live-boot-initramfs-tools git qrencode dialog bc
@@ -65,12 +65,12 @@ Answer the questions it asks.
 Set CHARMAP to UTF-8 to make the QR codes work.
 
     # sed -i 's/ISO-8859-15/UTF-8/' /etc/default/console-setup
-    
+
 Disable the network setup scripts from running at boot.
-   
+
     # echo "CONFIGURE_INTERFACES=no" >> /etc/default/networking
 
-Disable TTY 2-6 by editing /etc/inittab. Comment out the lines 
+Disable TTY 2-6 by editing /etc/inittab. Comment out the lines
 
     2:23:respawn:/sbin/getty 38400 tty2
     3:23:respawn:/sbin/getty 38400 tty3
@@ -91,7 +91,7 @@ Install bitcoin related libraries/programs
     # git clone https://github.com/spesmilo/sx.git
     # cd sx
     # ./install-sx.sh
-    
+
 Answer yes when it asks if you want to install the packages.
 Once it finnishes without error messages. Clean up all the source files to decrease the size of the final image.
 
@@ -112,7 +112,7 @@ Install custom kernel with networking disabled
 
 Build kernel
 ------------
-   
+
     # cd /usr/src
     # apt-get install linux-source kernel-package linux-image-486
     # tar vxf linux-source-3.2.tar.bz2
@@ -128,29 +128,29 @@ Alternativly, use the supplied config file and save it to LiveCD/wheezy-chroot/u
 
     # wget -O ./.config https://raw.github.com/gehlm/paper-btc/master/config-3.2.51
 
-Disable everything in "Networking support" then head into "Device Drivers". 
-Disable everything in "Network device support". Including in the "Ethernet 
-driver support" and "USB Network Adapters" subdirectory. Some things can't 
-be disabled. But leaving them as {M} won't be a problem. After that head 
+Disable everything in "Networking support" then head into "Device Drivers".
+Disable everything in "Network device support". Including in the "Ethernet
+driver support" and "USB Network Adapters" subdirectory. Some things can't
+be disabled. But leaving them as {M} won't be a problem. After that head
 back into "Networking support" in the top directory and disable "Wireless".
 Exit and save the configuration.
 
     # make-kpkg --initrd --cross-compile - --arch=i386 --revision=01bitcointools kernel_image
 
-This will take quite some time. 
- 
- 
+This will take quite some time.
+
+
 Install kernel
 --------------
 
     # dpkg -i /usr/src/linux-image-3.2.51_01bitcointools_i386.deb
     # apt-get --reinstall install live-boot-initramfs-tools
-    
-   
+
+
 Clean up
 --------
     # cd /
-    # apt-get --purge autoremove linux-source linux-image-486 linux-source-3.2 kernel-package 
+    # apt-get --purge autoremove linux-source linux-image-486 linux-source-3.2 kernel-package
     # rm -rf /usr/src/linux-source-3.2
 
 
@@ -163,7 +163,7 @@ Leave chroot
     # umount /dev/pts
     # exit
     $ sudo umount wheezy-chroot/dev
-    
+
 ===============
 Set up isolinux
 ===============
@@ -176,12 +176,12 @@ Set up isolinux
 
 Create a isolinux.cfg to make the system automaticly boot into the live environment
     $ echo -e "default 1\n\
-        \n\
-        label 1\n\
-        \tlinux /live/vmlinuz\n\
-        \tinitrd /live/initrd.img\n\
-        \tappend boot=live config vga=791" > ./iso/isolinux/isolinux.cfg
-        
+	\n\
+	label 1\n\
+	\tlinux /live/vmlinuz\n\
+	\tinitrd /live/initrd.img\n\
+	\tappend boot=live config vga=791" > ./iso/isolinux/isolinux.cfg
+
 Create folder that contains the filesystem and kernel
     $ mkdir iso/live
     $ cp wheezy-chroot/boot/vmlinuz-3.2.51 ./iso/live/vmlinuz
@@ -189,7 +189,7 @@ Create folder that contains the filesystem and kernel
 
 Optionally remove the old kernel from the chroot environment to save space.
     $ sudo chroot wheezy-chroot apt-get --purge autoremove linux-image-3.2.51
-    
+
 ============
 Generate ISO
 ============
@@ -199,8 +199,8 @@ Generate ISO
     $ find -type f -print0 | xargs -0 md5sum | grep -v isolinux/boot.cat | tee md5sum.txt
     $ sudo genisoimage -D -r -V "Bitcoin Tools" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o ../bitcoin-tools.iso .
     $ cd ..
-    
+
 Make the isofile a hybrid iso so that it works both from CDs and USB drives.
     $ isohybrid bitcoin-tools.iso
-    
-    
+
+
