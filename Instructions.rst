@@ -108,7 +108,7 @@ Install paper-wallet.sh
 
 ==============================================
 Install custom kernel with networking disabled
-==============================================
+=================================r=============
 
 Build kernel
 ------------
@@ -201,6 +201,6 @@ Generate ISO
     $ cd ..
 
 Make the isofile a hybrid iso so that it works both from CDs and USB drives.
-    $ isohybrid bitcoin-tools.iso
+    $ sudo isohybrid bitcoin-tools.iso
 
 
