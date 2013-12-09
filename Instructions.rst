@@ -126,6 +126,7 @@ If you are building this on a 64-bit host. Prepend the make/make-kpkg lines with
 
 Alternativly, use the supplied config file and save it to LiveCD/wheezy-chroot/usr/src/linux-source-3.2/.config
 
+    # wget -O ./.config https://raw.github.com/gehlm/paper-btc/master/config-3.2.51
 
 Disable everything in "Networking support" then head into "Device Drivers". 
 Disable everything in "Network device support". Including in the "Ethernet 
