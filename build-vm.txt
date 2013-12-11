@@ -1,0 +1,54 @@
+=====================================================
+Create a VirtualBox VM to custom bitcoin-tools distro
+=====================================================
+
+Create a 32-bit Debian Wheezy in Virtual Machine
+------------------------------------------------
+http://www.debian.org/CD/netinst/
+Download debian-7.2.0-i386-netinst.iso
+
+Install and run VirtualBox
+--------------------------
+New virtual machine wizard
+Name: bitcoin-tools
+OS: Linux
+Version: Debian
+Memory: 1024MB
+Create New Hard Disk: VDI, Dynamically allocated, 8GB
+Settings:
+	Audio: Disable
+	Network: NAT
+	Storage: Add CD/DVD, Choose Disk, debian-7.2.0-i386-netinst.iso
+
+Perform Debian Console Install
+------------------------------
+Hostname: debian
+Domain: 
+Install: Standard system utilities only
+Add user "btc" with password "btc"
+Reboot.
+
+
+==================
+Add sudo and & git
+==================
+Login: btc
+> su
+# apt-get install sudo git
+# useradd btc sudo
+# exit
+> exit
+Login: btc
+
+
+===================================================================
+Grab the build-distro script & launch
+This will install all bitcoin-related software, remove networking,
+compile a custom linux kernel with networking removed, and finally
+build a live-boot iso image. 
+This takes a while to build
+===================================================================
+> wget https://raw.github.com/gehlm/paper-btc/master/build-distro.sh
+> chmod +x build.distro.sh
+> ./build-distro.sh
+

@@ -108,7 +108,7 @@ Install paper-wallet.sh
 
 ==============================================
 Install custom kernel with networking disabled
-=================================r=============
+==============================================
 
 Build kernel
 ------------
@@ -152,6 +152,7 @@ Clean up
     # cd /
     # apt-get --purge autoremove linux-source linux-image-486 linux-source-3.2 kernel-package
     # rm -rf /usr/src/linux-source-3.2
+	# apt-get clean
 
 
 ============
@@ -188,11 +189,11 @@ Create folder that contains the filesystem and kernel
     $ cp wheezy-chroot/boot/initrd.img-3.2.51 ./iso/live/initrd.img
 
 Optionally remove the old kernel from the chroot environment to save space.
-    $ sudo chroot wheezy-chroot apt-get --purge autoremove linux-image-3.2.51
+    $ sudo chroot wheezy-chroot apt-get --purge autoremove linux-image-3.2.0-4-486
 
 ============
 Generate ISO
-============
+============	
 
     $ sudo mksquashfs wheezy-chroot/ ./iso/live/filesystem.squashfs
     $ cd iso
